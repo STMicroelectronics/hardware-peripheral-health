@@ -33,8 +33,14 @@ static constexpr char kAcChargerName[] = "dummy-charger-ac";
 static constexpr char kUsbChargerName[] = "dummy-charger-usb_c";
 
 static constexpr size_t kDiskStatsSize = 11;
+
+#ifdef EMMC_STORAGE
+static constexpr char kDiskName[] = "mmcblk1";
+static constexpr char kDiskStatsFile[] = "/sys/block/mmcblk1/stat";
+#else
 static constexpr char kDiskName[] = "mmcblk0";
 static constexpr char kDiskStatsFile[] = "/sys/block/mmcblk0/stat";
+#endif
 
 void healthd_board_init(struct healthd_config*) {}
 

@@ -14,8 +14,44 @@
  * limitations under the License.
  */
 cc_binary {
-    name: "android.hardware.health@2.0-service.stm32mp1",
-    init_rc: ["android.hardware.health@2.0-service.stm32mp1.rc"],
+    name: "android.hardware.health@2.0-service.stm32mp1.emmc",
+    init_rc: ["android.hardware.health@2.0-service.stm32mp1.emmc.rc"],
+    proprietary: true,
+    relative_install_path: "hw",
+    srcs: [
+        "health_service.cpp",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-DEMMC_STORAGE",
+    ],
+
+    static_libs: [
+        "android.hardware.health@2.0-impl",
+        "android.hardware.health@1.0-convert",
+        "libhealthservice",
+        "libbatterymonitor",
+    ],
+
+    shared_libs: [
+        "libbase",
+        "libcutils",
+        "libhidlbase",
+        "libhidltransport",
+        "libhwbinder",
+        "libutils",
+        "android.hardware.health@2.0",
+    ],
+
+    header_libs: ["libhealthd_headers"],
+
+}
+
+cc_binary {
+    name: "android.hardware.health@2.0-service.stm32mp1.sd",
+    init_rc: ["android.hardware.health@2.0-service.stm32mp1.sd.rc"],
     proprietary: true,
     relative_install_path: "hw",
     srcs: [
