@@ -13,73 +13,77 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-cc_binary {
-    name: "android.hardware.health@2.0-service.stm32mp1.emmc",
-    init_rc: ["android.hardware.health@2.0-service.stm32mp1.emmc.rc"],
+
+cc_library_shared {
+    name: "android.hardware.health@2.1-impl-stm32mp1.emmc",
+    stem: "android.hardware.health@2.0-impl-2.1-stm32mp1.emmc",
+
+    // Install to vendor and recovery.
     proprietary: true,
+    recovery_available: true,
+
     relative_install_path: "hw",
-    srcs: [
-        "health_service.cpp",
+
+    shared_libs: [
+        "libbase",
+        "libcutils",
+        "libhidlbase",
+        "liblog",
+        "libutils",
+        "android.hardware.health@2.1",
+        "android.hardware.health@2.0",
+    ],
+
+    static_libs: [
+        "android.hardware.health@1.0-convert",
+        "libbatterymonitor",
+        "libhealthloop",
+        "libhealth2impl",
     ],
 
     cflags: [
-        "-Wall",
-        "-Werror",
         "-DEMMC_STORAGE",
     ],
 
-    static_libs: [
-        "android.hardware.health@2.0-impl",
-        "android.hardware.health@1.0-convert",
-        "libhealthservice",
-        "libbatterymonitor",
+    srcs: [
+        "HealthImpl.cpp",
     ],
 
-    shared_libs: [
-        "libbase",
-        "libcutils",
-        "libhidlbase",
-        "libhidltransport",
-        "libhwbinder",
-        "libutils",
-        "android.hardware.health@2.0",
-    ],
-
-    header_libs: ["libhealthd_headers"],
-
+    // No vintf_fragments because both -impl and -service should have been
+    // installed.
 }
 
-cc_binary {
-    name: "android.hardware.health@2.0-service.stm32mp1.sd",
-    init_rc: ["android.hardware.health@2.0-service.stm32mp1.sd.rc"],
+cc_library_shared {
+    name: "android.hardware.health@2.1-impl-stm32mp1.sd",
+    stem: "android.hardware.health@2.0-impl-2.1-stm32mp1.sd",
+
+    // Install to vendor and recovery.
     proprietary: true,
+    recovery_available: true,
+
     relative_install_path: "hw",
-    srcs: [
-        "health_service.cpp",
-    ],
-
-    cflags: [
-        "-Wall",
-        "-Werror",
-    ],
-
-    static_libs: [
-        "android.hardware.health@2.0-impl",
-        "android.hardware.health@1.0-convert",
-        "libhealthservice",
-        "libbatterymonitor",
-    ],
 
     shared_libs: [
         "libbase",
         "libcutils",
         "libhidlbase",
-        "libhidltransport",
-        "libhwbinder",
+        "liblog",
         "libutils",
+        "android.hardware.health@2.1",
         "android.hardware.health@2.0",
     ],
 
-    header_libs: ["libhealthd_headers"],
+    static_libs: [
+        "android.hardware.health@1.0-convert",
+        "libbatterymonitor",
+        "libhealthloop",
+        "libhealth2impl",
+    ],
 
+    srcs: [
+        "HealthImpl.cpp",
+    ],
+
+    // No vintf_fragments because both -impl and -service should have been
+    // installed.
 }
