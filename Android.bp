@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2018 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
+ * Copyright (C) 2019 STMicroelectronics
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,76 +15,89 @@
  * limitations under the License.
  */
 
-cc_library_shared {
-    name: "android.hardware.health@2.1-impl-stm32mp1.emmc",
-    stem: "android.hardware.health@2.0-impl-2.1-stm32mp1.emmc",
+package {
+    default_applicable_licenses: ["hardware_health_license"],
+}
 
-    // Install to vendor and recovery.
-    proprietary: true,
-    recovery_available: true,
-
-    relative_install_path: "hw",
-
-    shared_libs: [
-        "libbase",
-        "libcutils",
-        "libhidlbase",
-        "liblog",
-        "libutils",
-        "android.hardware.health@2.1",
-        "android.hardware.health@2.0",
+license {
+    name: "hardware_health_license",
+    visibility: [":__subpackages__"],
+    license_kinds: [
+        "SPDX-license-identifier-Apache-2.0",
     ],
+    license_text: [
+        "LICENSE",
+    ],
+}
 
-    static_libs: [
-        "android.hardware.health@1.0-convert",
-        "libbatterymonitor",
-        "libhealthloop",
-        "libhealth2impl",
+cc_defaults {
+    name: "android.hardware.health-service.stm32mpu-defaults",
+    relative_install_path: "hw",
+    vintf_fragments: ["android.hardware.health-service.stm32mpu.xml"],
+
+    srcs: [
+        "health.cpp",
     ],
 
     cflags: [
-        "-DEMMC_STORAGE",
+        "-Wall",
+        "-Werror",
     ],
 
-    srcs: [
-        "HealthImpl.cpp",
+    static_libs: [
+        "android.hardware.health-translate-ndk",
+        "libbatterymonitor",
+        "libhealthloop",
+        "libhealth_aidl_impl",
     ],
-
-    // No vintf_fragments because both -impl and -service should have been
-    // installed.
-}
-
-cc_library_shared {
-    name: "android.hardware.health@2.1-impl-stm32mp1.sd",
-    stem: "android.hardware.health@2.0-impl-2.1-stm32mp1.sd",
-
-    // Install to vendor and recovery.
-    proprietary: true,
-    recovery_available: true,
-
-    relative_install_path: "hw",
 
     shared_libs: [
         "libbase",
+        "libbinder_ndk",
         "libcutils",
         "libhidlbase",
         "liblog",
         "libutils",
-        "android.hardware.health@2.1",
-        "android.hardware.health@2.0",
+        "android.hardware.health-V1-ndk",
     ],
 
-    static_libs: [
-        "android.hardware.health@1.0-convert",
-        "libbatterymonitor",
-        "libhealthloop",
-        "libhealth2impl",
-    ],
+    defaults: ["enabled_on_p_and_later"],
+}
 
-    srcs: [
-        "HealthImpl.cpp",
+cc_binary {
+    name: "android.hardware.health-service.stm32mpu.emmc",
+    defaults: ["android.hardware.health-service.stm32mpu-defaults"],
+    proprietary: true,
+    cflags: [
+        "-DEMMC_STORAGE",
     ],
+    init_rc: ["android.hardware.health-service.stm32mpu.emmc.rc"],
+    overrides: ["charger"],
+}
 
-    // No vintf_fragments because both -impl and -service should have been
-    // installed.
+cc_binary {
+    name: "android.hardware.health-service.stm32mpu.sd",
+    defaults: ["android.hardware.health-service.stm32mpu-defaults"],
+    proprietary: true,
+    init_rc: ["android.hardware.health-service.stm32mpu.sd.rc"],
+    overrides: ["charger"],
+}
+
+cc_binary {
+    name: "android.hardware.health-service.stm32mpu_recovery.emmc",
+    defaults: ["android.hardware.health-service.stm32mpu-defaults"],
+    recovery: true,
+    cflags: [
+        "-DEMMC_STORAGE",
+    ],
+    init_rc: ["android.hardware.health-service.stm32mpu_recovery.emmc.rc"],
+    overrides: ["charger.recovery"],
+}
+
+cc_binary {
+    name: "android.hardware.health-service.stm32mpu_recovery.sd",
+    defaults: ["android.hardware.health-service.stm32mpu-defaults"],
+    recovery: true,
+    init_rc: ["android.hardware.health-service.stm32mpu_recovery.sd.rc"],
+    overrides: ["charger.recovery"],
 }

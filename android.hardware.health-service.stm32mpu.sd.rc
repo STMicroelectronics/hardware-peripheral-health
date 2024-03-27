@@ -1,0 +1,6 @@
+service vendor.health-stm32mpu /vendor/bin/hw/android.hardware.health-service.stm32mpu.sd
+    class hal
+    user system
+    group system
+    capabilities WAKE_ALARM BLOCK_SUSPEND
+    file /dev/kmsg w
