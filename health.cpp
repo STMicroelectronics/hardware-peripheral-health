@@ -45,7 +45,7 @@ class HealthImpl : public Health {
  public:
   // Inherit constructor
   using Health::Health;
-  virtual ~HealthImpl() {}
+  ~HealthImpl() override = default;
 
   ScopedAStatus getChargeCounterUah(int32_t* out) override;
   ScopedAStatus getCurrentNowMicroamps(int32_t* out) override;
@@ -124,13 +124,13 @@ void HealthImpl::UpdateHealthInfo(HealthInfo* health_info) {
   }
 
   buffer.pop_back();
-  if (buffer.compare("Charging") == 0) {
+  if (buffer == "Charging") {
     health_info->batteryStatus = BatteryStatus::CHARGING;
-  } else if (buffer.compare("Discharging") == 0) {
+  } else if (buffer == "Discharging") {
     health_info->batteryStatus = BatteryStatus::DISCHARGING;
-  } else if (buffer.compare("Not-charging") == 0) {
+  } else if (buffer == "Not-charging") {
     health_info->batteryStatus = BatteryStatus::NOT_CHARGING;
-  } else if (buffer.compare("Full") == 0) {
+  } else if (buffer == "Full") {
     health_info->batteryStatus = BatteryStatus::FULL;
   } else {
     health_info->batteryStatus = BatteryStatus::UNKNOWN;
@@ -147,15 +147,15 @@ void HealthImpl::UpdateHealthInfo(HealthInfo* health_info) {
   }
 
   buffer.pop_back();
-  if (buffer.compare("Good") == 0) {
+  if (buffer == "Good") {
     health_info->batteryHealth = BatteryHealth::GOOD;
-  } else if (buffer.compare("Overheat") == 0) {
+  } else if (buffer == "Overheat") {
     health_info->batteryHealth = BatteryHealth::OVERHEAT;
-  } else if (buffer.compare("Dead") == 0) {
+  } else if (buffer == "Dead") {
     health_info->batteryHealth = BatteryHealth::DEAD;
-  } else if (buffer.compare("Overvoltage") == 0) {
+  } else if (buffer == "Overvoltage") {
     health_info->batteryHealth = BatteryHealth::OVER_VOLTAGE;
-  } else if (buffer.compare("Failure") == 0) {
+  } else if (buffer == "Failure") {
     health_info->batteryHealth = BatteryHealth::UNSPECIFIED_FAILURE;
   } else {
     health_info->batteryHealth = BatteryHealth::UNKNOWN;
@@ -246,7 +246,7 @@ void HealthImpl::UpdateHealthInfo(HealthInfo* health_info) {
     health_info->batteryHealth = BatteryHealth::UNKNOWN;
     return;
   }
-  health_info->batteryTechnology = buffer.c_str();
+  health_info->batteryTechnology = buffer;
 }
 
 ScopedAStatus HealthImpl::getChargeCounterUah(int32_t* out) {
@@ -328,18 +328,18 @@ ScopedAStatus HealthImpl::getChargeStatus(BatteryStatus* out) {
   }
 
   buffer.pop_back();
-  if (buffer.compare("Charging") == 0) {
+  if (buffer == "Charging") {
     *out = BatteryStatus::CHARGING;
-  } else if (buffer.compare("Discharging") == 0) {
+  } else if (buffer == "Discharging") {
     *out = BatteryStatus::DISCHARGING;
-  } else if (buffer.compare("Not-charging") == 0) {
+  } else if (buffer == "Not-charging") {
     *out = BatteryStatus::NOT_CHARGING;
-  } else if (buffer.compare("Full") == 0) {
+  } else if (buffer == "Full") {
     *out = BatteryStatus::FULL;
   } else {
     *out = BatteryStatus::UNKNOWN;
   }
-  
+
   return ScopedAStatus::ok();
 }
 
